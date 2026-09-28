@@ -44,7 +44,7 @@ class MetagraphoApi:
     T = TypeVar("T", bound="MetagraphoApi")
 
     BASE_URL: Final[str] = "https://transkribus.eu/processing/v1"
-    access_token: TranskribusApi.AccessToken
+    access_token: "TranskribusApi.AccessToken"
 
     def __init__(self, api: "TranskribusApi"):
         """Init new metagrapho/processing API client.
