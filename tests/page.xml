@@ -1,0 +1,24 @@
+<PcGts xmlns="http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15 http://schema.primaresearch.org/PAGE/gts/pagecontent/2013-07-15/pagecontent.xsd">
+  <Metadata>
+    <Creator>Transkribus Processing API</Creator>
+    <Created>2026-09-28T16:14:53.808+02:00</Created>
+    <LastChange>2026-09-28T16:14:53.808+02:00</LastChange>
+  </Metadata>
+  <Page imageFilename="orig_proc-api-0b61d87e-4689-4424-80c5-611c8ceb7c64.jpg" imageWidth="2731" imageHeight="4096">
+    <ReadingOrder>
+      <OrderedGroup id="ro_1790605026109" caption="Regions reading order">
+        <RegionRefIndexed index="0" regionRef="tr_1"/>
+      </OrderedGroup>
+    </ReadingOrder>
+    <TextRegion orientation="0.0" id="tr_1" custom="readingOrder {index:0;}">
+      <Coords points="241,330 241,3917 1988,3917 1988,330"/>
+      <TextLine id="tr_1_tl_1" custom="readingOrder {index:0;}">
+        <Coords points="319,420 545,459 838,422 916,493 1140,422 1231,418 1306,472 1429,412 1429,343 1293,274 914,297 800,353 659,289 586,317 319,276"/>
+        <Baseline points="331,414 386,412 441,413 496,411 551,411 607,410 662,410 717,411 772,411 827,410 883,411 938,411 993,411 1048,411 1103,410 1159,409 1214,409 1269,410 1324,408 1379,406 1435,403"/>
+        <TextEquiv>
+          <Unicode>The mischievousness of the office</Unicode>
+        </TextEquiv>
+      </TextLine>
+    </TextRegion>
+  </Page>
+</PcGts>

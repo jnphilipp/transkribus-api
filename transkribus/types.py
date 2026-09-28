@@ -1,0 +1,75 @@
+# Copyright (C) 2026 J. Nathanael Philipp <jnathanael@philipp.land>
+#
+# Transkribus API Client
+#
+# This file is part of transkribus-api.
+#
+# transkribus-api is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# transkribus-api is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with transkribus-api. If not, see <http://www.gnu.org/licenses/>
+"""Transkribus API client types module."""
+
+import hashlib
+
+from dataclasses import dataclass
+from pathlib import Path
+from typing import TypeAlias
+
+JsonType: TypeAlias = (
+    None | bool | int | float | str | list["JsonType"] | dict[str, "JsonType"]
+)
+
+
+@dataclass(frozen=True)
+class UploadPage:
+    """Dataclass to upload a page."""
+
+    image: Path
+    page_xml: Path | None
+    page_nr: int
+    image_md5: str | None
+    page_xml_md5: str | None
+
+    def __init__(
+        self,
+        image: Path,
+        page_xml: Path | None,
+        page_nr: int,
+        image_md5: str | None = None,
+        page_xml_md5: str | None = None,
+    ) -> None:
+        """Init."""
+        object.__setattr__(self, "image", image)
+        object.__setattr__(self, "page_xml", page_xml)
+        object.__setattr__(self, "page_nr", page_nr)
+        object.__setattr__(
+            self,
+            "image_md5",
+            (
+                hashlib.md5(open(self.image, "rb").read()).hexdigest()
+                if image_md5 is None
+                else image_md5
+            ),
+        )
+        object.__setattr__(
+            self,
+            "page_xml_md5",
+            (
+                (
+                    hashlib.md5(open(self.page_xml, "rb").read()).hexdigest()
+                    if self.page_xml is not None
+                    else None
+                )
+                if page_xml_md5 is None
+                else page_xml_md5
+            ),
+        )

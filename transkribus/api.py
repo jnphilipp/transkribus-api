@@ -21,7 +21,12 @@
 import requests
 
 from datetime import datetime, timedelta
+from lxml import etree
 from typing import Final, Type, TypeVar
+
+from .metagrapho import MetagraphoApi
+from .types import JsonType
+from .utils import parse_xml
 
 
 class TranskribusApi:
@@ -30,6 +35,7 @@ class TranskribusApi:
     T = TypeVar("T", bound="TranskribusApi")
 
     access_token: "TranskribusApi.AccessToken"
+    metagrapho: MetagraphoApi
 
     class AccessToken:
         """API access token."""
@@ -79,6 +85,13 @@ class TranskribusApi:
             """
             self.refresh()
             return f"{self.token_type} {self.access_token}"
+
+        def get_request_header(self) -> dict[str, str]:
+            """Get auth token for request header.
+
+            Auto refreshes the token if it is expired.
+            """
+            return {"Authorization": self.get_auth_token()}
 
         def is_expired(self) -> bool:
             """Check if the access token is expired."""
@@ -178,10 +191,114 @@ class TranskribusApi:
         self, username: str, password: str, client_id: str = "transkribus-api-client"
     ):
         """Init."""
+        self.metagrapho = MetagraphoApi(self)
+
         self.open(username, password, client_id)
 
+    def _delete(self, url: str, params: dict = {}) -> JsonType:
+        """Make a delete request."""
+        r = requests.delete(
+            url,
+            headers={"Accept": "application/json, text/plain, */*"}
+            | self.access_token.get_request_header(),
+            params=params,
+        )
+        if r.status_code == requests.codes.unauthorized:
+            self.access_token.refresh(True)
+            r = requests.delete(
+                url,
+                headers={"Accept": "application/json, text/plain, */*"}
+                | self.access_token.get_request_header(),
+                params=params,
+            )
+        r.raise_for_status()
+        return self._handle_response(r)
+
+    def _get(self, url: str, params: dict = {}) -> JsonType:
+        """Make a get request."""
+        r = requests.get(
+            url,
+            headers={"Accept": "application/json, text/plain, */*"}
+            | self.access_token.get_request_header(),
+            params=params,
+        )
+        if r.status_code == requests.codes.unauthorized:
+            self.access_token.refresh(True)
+            r = requests.get(
+                url,
+                headers={"Accept": "application/json, text/plain, */*"}
+                | self.access_token.get_request_header(),
+                params=params,
+            )
+        r.raise_for_status()
+        return self._handle_response(r)
+
+    def _handle_response(
+        self, response: requests.models.Response
+    ) -> etree._Element | JsonType:
+        """Convert response to JSON if content type indicates it."""
+        content_type = response.headers.get("Content-Type", "")
+        media_type = content_type.partition(";")[0].strip().lower()
+        if media_type in {"application/json", "application/problem+json"}:
+            try:
+                return response.json()
+            except requests.exceptions.JSONDecodeError:
+                return response.text
+        elif media_type == "application/xml":
+            return parse_xml(response.content)
+        else:
+            return response.text
+
+    def _post(
+        self,
+        url: str,
+        params: dict = {},
+        data: dict = {},
+        json: JsonType = None,
+    ) -> JsonType:
+        """Make a post request."""
+        r = requests.post(
+            url,
+            headers={"Accept": "application/json, text/plain, */*"}
+            | self.access_token.get_request_header(),
+            params=params,
+            data=data,
+            json=json,
+        )
+        if r.status_code == requests.codes.unauthorized:
+            self.access_token.refresh(True)
+            r = requests.post(
+                url,
+                headers={"Accept": "application/json, text/plain, */*"}
+                | self.access_token.get_request_header(),
+                params=params,
+                data=data,
+                json=json,
+            )
+        r.raise_for_status()
+        return self._handle_response(r)
+
+    def _put(self, url: str, files: dict[str, tuple]) -> JsonType:
+        """Make a put request."""
+        r = requests.put(
+            url,
+            headers={"Accept": "application/json, text/plain, */*"}
+            | self.access_token.get_request_header(),
+            files=files,
+        )
+        if r.status_code == requests.codes.unauthorized:
+            self.access_token.refresh(True)
+            r = requests.put(
+                url,
+                headers={"Accept": "application/json, text/plain, */*"}
+                | self.access_token.get_request_header(),
+                files=files,
+            )
+        r.raise_for_status()
+        return self._handle_response(r)
+
     def open(
-        self, username: str, password: str, client_id: str = "transkribus-api-client"
+        self, username: str, password: str, client_id: str = "processing-api-client"
     ):
         """Open this API.
 
