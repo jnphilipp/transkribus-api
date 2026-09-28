@@ -73,7 +73,7 @@ class TranskribusApi:
             self.scope = scope
 
         def get_auth_token(self) -> str:
-            """Get auth token for Authentication header.
+            """Get auth token for request header.
 
             Auto refreshes if token is expired.
             """

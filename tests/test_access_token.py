@@ -27,7 +27,7 @@ from unittest.mock import patch, MagicMock
 
 
 class TestAccessToken(unittest.TestCase):
-    """Testss for TranskribusApi.AccessToken."""
+    """Tests for TranskribusApi.AccessToken."""
 
     @patch("transkribus.api.requests")
     def test_obtain_revoke(self, mock_requests):
