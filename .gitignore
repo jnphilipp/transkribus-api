@@ -3,6 +3,8 @@ __pycache__/
 .mypy_cache/
 venv
 *.pyc
+dist/
+*.egg-info/
 
 # SublimeText
 *.sublime-project
