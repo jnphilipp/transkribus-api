@@ -9,12 +9,13 @@ else
 endif
 
 
+build: test
+	python -m build
+
 clean:
-	$(Q)rm -rf ./build ./dist ./python/bikkuri.egg-info
+	$(Q)rm -rf ./build ./dist ./python/transkribus-api.egg-info
 	$(Q)find . -name __pycache__ -exec rm -rf {} \;
 	@echo "--- Deleted __pycache__ and build and dist dirs"
-
-
 
 changelog.latest.md:
 	$(Q)( \
