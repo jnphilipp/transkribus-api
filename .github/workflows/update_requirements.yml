@@ -20,8 +20,11 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.11"
-      - name: Configure git via gh
-        run: gh auth setup-git
+      - name: Configure git via gh and set user
+        run: |
+          gh auth setup-git
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          git config user.name "${{ github.actor }}"
       - name: Create/update branch and install tools
         run: |
           git checkout -B update-requirements
