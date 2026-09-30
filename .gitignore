@@ -6,6 +6,9 @@ venv
 dist/
 *.egg-info/
 
+# other
+changelog.latest.md
+
 # SublimeText
 *.sublime-project
 *.sublime-workspace
