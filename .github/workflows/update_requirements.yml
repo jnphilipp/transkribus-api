@@ -14,8 +14,15 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
+      - name: Checkout repository with update-requirements branch
+        uses: actions/checkout@v7
+        id: checkout-branch
+        continue-on-error: true
+        with:
+          ref: update-requirements
+      - name: Checkout repository fallback to main branch
+        if: steps.checkout-branch.outcome == 'failure'
+        uses: actions/checkout@v7
       - name: Set up Python
         uses: actions/setup-python@v6
         with:
